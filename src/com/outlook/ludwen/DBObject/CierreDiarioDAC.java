@@ -60,6 +60,25 @@ public class CierreDiarioDAC extends CnnMySql {
         return dto;
     }
 
+    public CierreDiario getCierreDiario(String fecha) throws SQLException, IllegalArgumentException, IllegalAccessException {
+        CierreDiario dto = new CierreDiario();
+        String sql = "SELECT " + dtoBase.getNombreCampos() + " FROM " + dtoBase.getTabla() + " WHERE DATE_FORMAT(" + dtoBase.getNombreCampo(3) + ",'%d%m%Y') =  DATE_FORMAT(STR_TO_DATE('" + fecha + "','%d%m%Y'),'%d%m%Y')";
+        Statement st = getCnn().createStatement();
+
+        ResultSet rs = st.executeQuery(sql);
+        //rs.first();
+        while (rs.next()) {
+            dto = getRegistro(rs);
+        }
+        if (st != null) {
+            st.close();
+        }
+        if (rs != null) {
+            rs.close();
+        }
+        return dto;
+    }
+
     public List<CierreDiario> buscarPorCriterio(String criterio) throws SQLException, IllegalArgumentException, IllegalAccessException {
         List<CierreDiario> lst = new ArrayList<CierreDiario>();
         String sql = "SELECT " + dtoBase.getNombreCampos() + " FROM " + dtoBase.getTabla() + " WHERE " + dtoBase.getNombreCampo(2) + " like '%" + criterio + "%' OR " + dtoBase.getNombreCampo(3) + " like '%" + criterio + "%'";
@@ -100,6 +119,7 @@ public class CierreDiarioDAC extends CnnMySql {
         dto.setJustificacion(prs.getString(dtoBase.getNombreCampo(18)));
         dto.setMontoDeposito(prs.getDouble(dtoBase.getNombreCampo(19)));
         dto.setCajaFinal(prs.getDouble(dtoBase.getNombreCampo(20)));
+        dto.setStrFacturado(prs.getString(dtoBase.getNombreCampo(21)));
         return dto;
     }
 
@@ -107,8 +127,8 @@ public class CierreDiarioDAC extends CnnMySql {
         String sql = "";
         PreparedStatement pstr = null;
         if (accion == CnnMySql.ACCION_INSERT) {
-            int[] indices = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-            sql = "INSERT INTO " + dtoBase.getTabla() + " (" + dtoBase.getNombreCampos(indices) + ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            int[] indices = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,21};
+            sql = "INSERT INTO " + dtoBase.getTabla() + " (" + dtoBase.getNombreCampos(indices) + ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             pstr = getCnn().prepareStatement(sql);
 
             pstr.setDate(1, dto.getFechaCierre());
@@ -128,20 +148,21 @@ public class CierreDiarioDAC extends CnnMySql {
             pstr.setDouble(15, dto.getMontoJustificacion());
             pstr.setString(16, dto.getJustificacion());
             pstr.setDouble(17, dto.getMontoDeposito());
-            pstr.setDouble(18, dto.getCajaFinal());            
+            pstr.setDouble(18, dto.getCajaFinal());
+            pstr.setString(19, dto.getStrFacturado());
             pstr.executeUpdate();
             getCnn().commit();
         } else if (accion == CnnMySql.ACCION_UPDATE) {
-            sql = "UPDATE " + dtoBase.getTabla() + " SET " 
+            sql = "UPDATE " + dtoBase.getTabla() + " SET "
                     + dtoBase.getNombreCampo(3) + " = ? ," + dtoBase.getNombreCampo(4) + " = ? ,"
                     + dtoBase.getNombreCampo(5) + " = ?, " + dtoBase.getNombreCampo(6) + " = ?, "
-                    + dtoBase.getNombreCampo(7) + " = ?, " + dtoBase.getNombreCampo(8)+ " = ?, "
-                    + dtoBase.getNombreCampo(9) + " = ?, " + dtoBase.getNombreCampo(10)+ " = ?, "
-                    + dtoBase.getNombreCampo(11) + " = ?, " + dtoBase.getNombreCampo(12)+ " = ?, "
-                    + dtoBase.getNombreCampo(13) + " = ?, " + dtoBase.getNombreCampo(14)+ " = ?, "
-                    + dtoBase.getNombreCampo(15) + " = ?, " + dtoBase.getNombreCampo(16)+ " = ?, "
-                    + dtoBase.getNombreCampo(17) + " = ?, " + dtoBase.getNombreCampo(18)+ " = ?, "
-                    + dtoBase.getNombreCampo(19) + " = ?, " + dtoBase.getNombreCampo(20)
+                    + dtoBase.getNombreCampo(7) + " = ?, " + dtoBase.getNombreCampo(8) + " = ?, "
+                    + dtoBase.getNombreCampo(9) + " = ?, " + dtoBase.getNombreCampo(10) + " = ?, "
+                    + dtoBase.getNombreCampo(11) + " = ?, " + dtoBase.getNombreCampo(12) + " = ?, "
+                    + dtoBase.getNombreCampo(13) + " = ?, " + dtoBase.getNombreCampo(14) + " = ?, "
+                    + dtoBase.getNombreCampo(15) + " = ?, " + dtoBase.getNombreCampo(16) + " = ?, "
+                    + dtoBase.getNombreCampo(17) + " = ?, " + dtoBase.getNombreCampo(18) + " = ?, "
+                    + dtoBase.getNombreCampo(19) + " = ?, " + dtoBase.getNombreCampo(20) + " = ?, " + dtoBase.getNombreCampo(21)
                     + " = ? WHERE " + dtoBase.getNombreCampo(1) + " = ?";
             pstr = getCnn().prepareStatement(sql);
             pstr.setDate(1, dto.getFechaCierre());
@@ -162,6 +183,7 @@ public class CierreDiarioDAC extends CnnMySql {
             pstr.setString(16, dto.getJustificacion());
             pstr.setDouble(17, dto.getMontoDeposito());
             pstr.setDouble(18, dto.getCajaFinal());
+            pstr.setString(19, dto.getStrFacturado());
             pstr.executeUpdate();
             getCnn().commit();
         } else if (accion == CnnMySql.ACCION_DELETE) {
@@ -197,8 +219,8 @@ public class CierreDiarioDAC extends CnnMySql {
     }
 
     public boolean importarCierreDiariosFromExcel(String archivo) throws Exception {
-        int[] indices = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-        String sql = "INSERT INTO " + dtoBase.getTabla() + " (" + dtoBase.getNombreCampos(indices) + ") VALUES(@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param)";
+        int[] indices = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,21};
+        String sql = "INSERT INTO " + dtoBase.getTabla() + " (" + dtoBase.getNombreCampos(indices) + ") VALUES(@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param)";
         int tipoDatos[] = {Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR};
         Excel excel = new Excel();
         //excel.LeerHoja(archivo);

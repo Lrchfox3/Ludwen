@@ -45,6 +45,59 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
 
         cajaInicial = 447.0;
         this.lblCajaInicial.setText("Lps " + df2.format(cajaInicial));
+
+        CierreDiario dto = new CierreDiario();
+
+        try {
+            dto = CierreDiarioBC.getCierreDiario(getStrFechaActual(getFechaActual(), "ddMMyyyy"));
+
+            if (dto != null) {
+                this.txtCantidad500.setText(String.valueOf(dto.Cantidad500().getIntValue()));
+                this.lblMonto500.setText("= Lps " + (500 * dto.Cantidad500().getIntValue()));
+
+                this.txtCantidad100.setText(String.valueOf(dto.Cantidad100().getIntValue()));
+                this.lblMonto100.setText("= Lps " + (100 * dto.Cantidad100().getIntValue()));
+
+                this.txtCantidad50.setText(String.valueOf(dto.Cantidad50().getIntValue()));
+                this.lblMonto50.setText("= Lps " + (50 * dto.Cantidad50().getIntValue()));
+
+                this.txtCantidad20.setText(String.valueOf(dto.Cantidad20().getIntValue()));
+                this.lblMonto20.setText("= Lps " + (20 * dto.Cantidad20().getIntValue()));
+
+                this.txtCantidad10.setText(String.valueOf(dto.Cantidad10().getIntValue()));
+                this.lblMonto10.setText("= Lps " + (10 * dto.Cantidad10().getIntValue()));
+
+                this.txtCantidad5.setText(String.valueOf(dto.Cantidad5().getIntValue()));
+                this.lblMonto5.setText("= Lps " + (5 * dto.Cantidad5().getIntValue()));
+
+                this.txtCantidad2.setText(String.valueOf(dto.Cantidad2().getIntValue()));
+                this.lblMonto2.setText("= Lps " + (2 * dto.Cantidad2().getIntValue()));
+
+                this.txtCantidad1.setText(String.valueOf(dto.Cantidad1().getIntValue()));
+                this.lblMonto1.setText("= Lps " + (1 * dto.Cantidad1().getIntValue()));
+
+                this.txtMontoMonedas.setText(String.valueOf(dto.MontoMoneda().getDoubleValue()));
+
+                /*this.lblMontoTotalCaja.setText("Lps");
+                this.lblCajaApertura.setText("Lps");
+                this.txtFacturado.setText("");
+                this.txtPOS1.setText("");
+                this.txtPOS2.setText("");
+                this.txtMontoJustificacion.setText("");
+                this.txtJustificacion.setText("");
+                this.txtDeposito.setText("");
+                this.lblCajaFinal.setText("Lps");
+                this.lblFacturado.setText("");
+                this.txtCantidad500.requestFocus();*/
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -959,7 +1012,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         double deposito = Double.parseDouble((this.txtDeposito.getTextoSinFormato().length() <= 0 ? "0" : this.txtDeposito.getTextoSinFormato()));
 
         this.lblCajaFinal.setText(df2.format(montoTotalCaja - deposito));
-        cajaFinal =  montoTotalCaja - deposito;
+        cajaFinal = montoTotalCaja - deposito;
     }//GEN-LAST:event_txtDepositoFocusLost
 
     private void txtDepositoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDepositoKeyReleased
@@ -1027,8 +1080,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void guardar() throws ParseException, SQLException, IllegalArgumentException, IllegalAccessException {
-        
-        
+
         CierreDiario dto = new CierreDiario();
 
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
@@ -1036,29 +1088,29 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
 
         dto.setFechaCierre(sqlDate);
-         dto.setCajaInicio( cajaInicial );
-         dto.setCantidad500( Integer.parseInt((this.txtCantidad500.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad500.getTextoSinFormato())     )        );
-         dto.setCantidad100(Integer.parseInt((this.txtCantidad100.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad100.getTextoSinFormato())     )        );
-         dto.setCantidad50(Integer.parseInt((this.txtCantidad50.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad50.getTextoSinFormato())     )        );
-         dto.setCantidad20(Integer.parseInt((this.txtCantidad20.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad20.getTextoSinFormato())     )        );
-         dto.setCantidad10(Integer.parseInt((this.txtCantidad10.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad10.getTextoSinFormato())     )        );
-         dto.setCantidad5(Integer.parseInt((this.txtCantidad5.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad5.getTextoSinFormato())     )        );
-         dto.setCantidad2(Integer.parseInt((this.txtCantidad2.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad2.getTextoSinFormato())     )        );
-         dto.setCantidad1(Integer.parseInt((this.txtCantidad1.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad1.getTextoSinFormato())     )        );
-         dto.setMontoMoneda( Double.parseDouble((this.txtMontoMonedas.getTextoSinFormato().length() <= 0 ? "0" : this.txtMontoMonedas.getTextoSinFormato())     ) );
-         dto.setMontoFacturado( facturado );
-         dto.setMontoPOS1( Double.parseDouble((this.txtPOS1.getTextoSinFormato().length() <= 0 ? "0" : this.txtPOS1.getTextoSinFormato())     ) );
-         dto.setMontoPOS2(Double.parseDouble((this.txtPOS2.getTextoSinFormato().length() <= 0 ? "0" : this.txtPOS2.getTextoSinFormato())     ) );
-         dto.setMontoJustificacion( Double.parseDouble((this.txtMontoJustificacion.getTextoSinFormato().length() <= 0 ? "0" : this.txtMontoJustificacion.getTextoSinFormato())     ));
-         dto.setJustificacion( this.txtJustificacion.getText() );
-         dto.setMontoDeposito( Double.parseDouble((this.txtDeposito.getTextoSinFormato().length() <= 0 ? "0" : this.txtDeposito.getTextoSinFormato())     ) );
-         dto.setCajaFinal(cajaFinal);
-         
-         
-         boolean retValue;            
-                retValue = CierreDiarioBC.editar(CnnMySql.getAccion(), dto);
-                
-                CnnMySql.setAccion(CnnMySql.ACCION_UPDATE);
+        dto.setCajaInicio(cajaInicial);
+        dto.setCantidad500(Integer.parseInt((this.txtCantidad500.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad500.getTextoSinFormato())));
+        dto.setCantidad100(Integer.parseInt((this.txtCantidad100.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad100.getTextoSinFormato())));
+        dto.setCantidad50(Integer.parseInt((this.txtCantidad50.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad50.getTextoSinFormato())));
+        dto.setCantidad20(Integer.parseInt((this.txtCantidad20.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad20.getTextoSinFormato())));
+        dto.setCantidad10(Integer.parseInt((this.txtCantidad10.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad10.getTextoSinFormato())));
+        dto.setCantidad5(Integer.parseInt((this.txtCantidad5.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad5.getTextoSinFormato())));
+        dto.setCantidad2(Integer.parseInt((this.txtCantidad2.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad2.getTextoSinFormato())));
+        dto.setCantidad1(Integer.parseInt((this.txtCantidad1.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad1.getTextoSinFormato())));
+        dto.setMontoMoneda(Double.parseDouble((this.txtMontoMonedas.getTextoSinFormato().length() <= 0 ? "0" : this.txtMontoMonedas.getTextoSinFormato())));
+        dto.setMontoFacturado(facturado);
+        dto.setMontoPOS1(Double.parseDouble((this.txtPOS1.getTextoSinFormato().length() <= 0 ? "0" : this.txtPOS1.getTextoSinFormato())));
+        dto.setMontoPOS2(Double.parseDouble((this.txtPOS2.getTextoSinFormato().length() <= 0 ? "0" : this.txtPOS2.getTextoSinFormato())));
+        dto.setMontoJustificacion(Double.parseDouble((this.txtMontoJustificacion.getTextoSinFormato().length() <= 0 ? "0" : this.txtMontoJustificacion.getTextoSinFormato())));
+        dto.setJustificacion(this.txtJustificacion.getText());
+        dto.setMontoDeposito(Double.parseDouble((this.txtDeposito.getTextoSinFormato().length() <= 0 ? "0" : this.txtDeposito.getTextoSinFormato())));
+        dto.setCajaFinal(cajaFinal);
+        dto.setStrFacturado(this.txtFacturado.getTextoSinFormato());
+
+        boolean retValue;
+        retValue = CierreDiarioBC.editar(CnnMySql.getAccion(), dto);
+
+        CnnMySql.setAccion(CnnMySql.ACCION_UPDATE);
     }
 
     private void totalCaja() {
@@ -1078,50 +1130,8 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         this.lblCajaApertura.setText("Lps " + df2.format((c500 + c100 + c50 + c20 + c10 + c5 + c2 + c1 + coins) - cajaInicial));
     }
 
-    private void diferencia() {
+    private void cargarFecha(Date fecha) {
 
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(RegistraCierreDiario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(RegistraCierreDiario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(RegistraCierreDiario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RegistraCierreDiario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new RegistraCierreDiario().setVisible(true);
-            }
-        });
     }
 
     private DecimalFormat df2 = new DecimalFormat("#,###,###,##0.00");

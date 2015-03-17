@@ -24,6 +24,10 @@ public class CierreDiarioBC {
     public static CierreDiario getCierreDiario(int codigo) throws SQLException, IllegalArgumentException, IllegalAccessException{
         return dac.getCierreDiario(codigo);
     }
+    
+     public static CierreDiario getCierreDiario(String fecha) throws SQLException, IllegalArgumentException, IllegalAccessException{
+        return dac.getCierreDiario(fecha);
+    }
 
     public static boolean editar(int accion, CierreDiario dto ) throws SQLException, IllegalArgumentException, IllegalAccessException{
         return dac.editar(accion, dto);

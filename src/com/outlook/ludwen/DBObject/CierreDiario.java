@@ -35,6 +35,7 @@ public class CierreDiario extends Base {
     protected Campo justificacion= null;        //18
     protected Campo montoDeposito=null;        //19
     protected Campo cajaFinal=null;        //20
+    protected Campo strFacturado = null; //21
 
     public CierreDiario() {
         secuencia= new Campo("secuencia", "Secuencia", SqlTipos.INTEGER, true);
@@ -57,6 +58,7 @@ public class CierreDiario extends Base {
         justificacion= new Campo("justificacion", "Justificación", SqlTipos.VARCHAR);
         montoDeposito= new Campo("monto_Deposito", "Deposito", SqlTipos.DECIMAL);
         cajaFinal= new Campo("caja_Final", "Caja Final", SqlTipos.DECIMAL);
+        strFacturado = new Campo("FACTURADO_STR", "Facturado", SqlTipos.VARCHAR);
         setTabla("CIERRE_DIARIO");
         setTitulo("Cierre Diario");
     }
@@ -115,6 +117,10 @@ public class CierreDiario extends Base {
 
     public Campo MontoFacturado() {
         return montoFacturado;
+    }
+    
+        public Campo StrFacturado() {
+        return strFacturado;
     }
 
     public Campo MontoPOS1() {
@@ -245,6 +251,15 @@ public class CierreDiario extends Base {
         this.montoMoneda.setValue( montoMoneda);
     }
 
+    
+    public String getStrFacturado() {
+        return strFacturado.getStringValue();
+    }
+
+    public void setStrFacturado(String strFacturado) {
+        this.strFacturado.setValue(strFacturado);
+    }
+    
     public double getMontoFacturado() {
         return montoFacturado.getDoubleValue();
     }
