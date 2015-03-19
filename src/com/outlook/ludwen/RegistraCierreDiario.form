@@ -10,7 +10,7 @@
       <SubComponents>
         <MenuItem class="javax.swing.JMenuItem" name="mnuLimpiar">
           <Properties>
-            <Property name="label" type="java.lang.String" value="Limpiar"/>
+            <Property name="text" type="java.lang.String" value="Limpiar"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuLimpiarActionPerformed"/>
@@ -171,7 +171,7 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="lblMontoApertura" min="-2" pref="124" max="-2" attributes="0"/>
+                                  <Component id="lblCajaInicial" min="-2" pref="124" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
                                   <Component id="lblFecha" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -206,7 +206,7 @@
                           <Component id="lblFecha" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                          <Component id="lblMontoApertura" alignment="3" max="32767" attributes="0"/>
+                          <Component id="lblCajaInicial" alignment="3" max="32767" attributes="0"/>
                           <Component id="lblApertura" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -372,10 +372,13 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="com.gmail.lrchfox3.controles.textos.JEtiquetaTitulo" name="lblMontoApertura">
+        <Component class="com.gmail.lrchfox3.controles.textos.JEtiquetaTitulo" name="lblCajaInicial">
           <Properties>
             <Property name="text" type="java.lang.String" value="Lps"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblCajaInicialMouseClicked"/>
+          </Events>
         </Component>
         <Component class="com.gmail.lrchfox3.controles.textos.JTextoFormato" name="txtCantidad500">
           <Properties>
@@ -706,7 +709,6 @@
               </Properties>
               <Events>
                 <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtFacturadoFocusLost"/>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtFacturadoKeyReleased"/>
               </Events>
             </Component>
           </SubComponents>
@@ -846,10 +848,6 @@
               <ComponentRef name="txtPOS2"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtPOS1FocusLost"/>
-            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtPOS1KeyReleased"/>
-          </Events>
         </Component>
         <Component class="com.gmail.lrchfox3.controles.textos.JEtiquetaBase" name="lblJustificacion">
           <Properties>
@@ -873,7 +871,6 @@
           </Properties>
           <Events>
             <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtPOS2FocusLost"/>
-            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtPOS2KeyReleased"/>
           </Events>
         </Component>
         <Component class="com.gmail.lrchfox3.controles.textos.JEtiquetaBase" name="lblPOS2">
@@ -951,7 +948,6 @@
           </Properties>
           <Events>
             <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtDepositoFocusLost"/>
-            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtDepositoKeyReleased"/>
           </Events>
         </Component>
         <Component class="com.gmail.lrchfox3.controles.textos.JEtiquetaBase" name="lblCaja">
@@ -976,10 +972,6 @@
               <ComponentRef name="txtJustificacion"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtMontoJustificacionFocusLost"/>
-            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtMontoJustificacionKeyReleased"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

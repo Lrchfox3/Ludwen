@@ -60,15 +60,37 @@ public class CierreDiarioDAC extends CnnMySql {
         return dto;
     }
 
+    public Double getCajaInicial(String fecha) throws SQLException, IllegalArgumentException, IllegalAccessException {
+        
+        String sql = "SELECT " + dtoBase.getNombreCampo(20) + " FROM " + dtoBase.getTabla()
+                + " WHERE DATE_FORMAT(" + dtoBase.getNombreCampo(3) + ",'%d%m%Y') <  DATE_FORMAT(STR_TO_DATE('" + fecha + "','%d%m%Y'),'%d%m%Y') ORDER BY FECHA_CIERRE DESC LIMIT 1";
+        Statement st = getCnn().createStatement();
+        Double caja = 0.0;
+        ResultSet rs = st.executeQuery(sql);
+        boolean value = rs.next();
+        if (value) {            
+            caja = rs.getDouble(1);
+        } 
+        if (st != null) {
+            st.close();
+        }
+        if (rs != null) {
+            rs.close();
+        }
+        return caja;
+    }
+
     public CierreDiario getCierreDiario(String fecha) throws SQLException, IllegalArgumentException, IllegalAccessException {
         CierreDiario dto = new CierreDiario();
         String sql = "SELECT " + dtoBase.getNombreCampos() + " FROM " + dtoBase.getTabla() + " WHERE DATE_FORMAT(" + dtoBase.getNombreCampo(3) + ",'%d%m%Y') =  DATE_FORMAT(STR_TO_DATE('" + fecha + "','%d%m%Y'),'%d%m%Y')";
         Statement st = getCnn().createStatement();
 
         ResultSet rs = st.executeQuery(sql);
-        //rs.first();
-        while (rs.next()) {
+        boolean value = rs.next();
+        if (value) {
             dto = getRegistro(rs);
+        } else {
+            dto = null;
         }
         if (st != null) {
             st.close();
@@ -127,7 +149,7 @@ public class CierreDiarioDAC extends CnnMySql {
         String sql = "";
         PreparedStatement pstr = null;
         if (accion == CnnMySql.ACCION_INSERT) {
-            int[] indices = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,21};
+            int[] indices = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
             sql = "INSERT INTO " + dtoBase.getTabla() + " (" + dtoBase.getNombreCampos(indices) + ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             pstr = getCnn().prepareStatement(sql);
 
@@ -184,6 +206,7 @@ public class CierreDiarioDAC extends CnnMySql {
             pstr.setDouble(17, dto.getMontoDeposito());
             pstr.setDouble(18, dto.getCajaFinal());
             pstr.setString(19, dto.getStrFacturado());
+            pstr.setInt(20, dto.getSecuencia());
             pstr.executeUpdate();
             getCnn().commit();
         } else if (accion == CnnMySql.ACCION_DELETE) {
@@ -219,7 +242,7 @@ public class CierreDiarioDAC extends CnnMySql {
     }
 
     public boolean importarCierreDiariosFromExcel(String archivo) throws Exception {
-        int[] indices = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,21};
+        int[] indices = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
         String sql = "INSERT INTO " + dtoBase.getTabla() + " (" + dtoBase.getNombreCampos(indices) + ") VALUES(@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param,@param)";
         int tipoDatos[] = {Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR};
         Excel excel = new Excel();

@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -40,64 +41,9 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         this.dtFechaCierre.setVisible(false);
         this.dtFechaCierre.setDate(getFechaActual());
         this.lblFechaCierre.setText(getStrFechaActual(getFechaActual(), "dd/MM/yyyy"));
-
-        txtCantidad2.setNextFocusableComponent(txtCantidad1);
-
-        cajaInicial = 447.0;
-        this.lblCajaInicial.setText("Lps " + df2.format(cajaInicial));
-
-        CierreDiario dto = new CierreDiario();
-
-        try {
-            dto = CierreDiarioBC.getCierreDiario(getStrFechaActual(getFechaActual(), "ddMMyyyy"));
-
-            if (dto != null) {
-                this.txtCantidad500.setText(String.valueOf(dto.Cantidad500().getIntValue()));
-                this.lblMonto500.setText("= Lps " + (500 * dto.Cantidad500().getIntValue()));
-
-                this.txtCantidad100.setText(String.valueOf(dto.Cantidad100().getIntValue()));
-                this.lblMonto100.setText("= Lps " + (100 * dto.Cantidad100().getIntValue()));
-
-                this.txtCantidad50.setText(String.valueOf(dto.Cantidad50().getIntValue()));
-                this.lblMonto50.setText("= Lps " + (50 * dto.Cantidad50().getIntValue()));
-
-                this.txtCantidad20.setText(String.valueOf(dto.Cantidad20().getIntValue()));
-                this.lblMonto20.setText("= Lps " + (20 * dto.Cantidad20().getIntValue()));
-
-                this.txtCantidad10.setText(String.valueOf(dto.Cantidad10().getIntValue()));
-                this.lblMonto10.setText("= Lps " + (10 * dto.Cantidad10().getIntValue()));
-
-                this.txtCantidad5.setText(String.valueOf(dto.Cantidad5().getIntValue()));
-                this.lblMonto5.setText("= Lps " + (5 * dto.Cantidad5().getIntValue()));
-
-                this.txtCantidad2.setText(String.valueOf(dto.Cantidad2().getIntValue()));
-                this.lblMonto2.setText("= Lps " + (2 * dto.Cantidad2().getIntValue()));
-
-                this.txtCantidad1.setText(String.valueOf(dto.Cantidad1().getIntValue()));
-                this.lblMonto1.setText("= Lps " + (1 * dto.Cantidad1().getIntValue()));
-
-                this.txtMontoMonedas.setText(String.valueOf(dto.MontoMoneda().getDoubleValue()));
-
-                /*this.lblMontoTotalCaja.setText("Lps");
-                this.lblCajaApertura.setText("Lps");
-                this.txtFacturado.setText("");
-                this.txtPOS1.setText("");
-                this.txtPOS2.setText("");
-                this.txtMontoJustificacion.setText("");
-                this.txtJustificacion.setText("");
-                this.txtDeposito.setText("");
-                this.lblCajaFinal.setText("Lps");
-                this.lblFacturado.setText("");
-                this.txtCantidad500.requestFocus();*/
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ObtenerCierre(getStrFechaActual(getFechaActual(), "ddMMyyyy"));
+        
+        this.txtCantidad500.requestFocus();
     }
 
     /**
@@ -170,7 +116,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         lblCajaFinal = new com.gmail.lrchfox3.controles.textos.JEtiquetaTitulo();
         txtMontoJustificacion = new com.gmail.lrchfox3.controles.textos.JTextoFormato();
 
-        mnuLimpiar.setLabel("Limpiar");
+        mnuLimpiar.setText("Limpiar");
         mnuLimpiar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuLimpiarActionPerformed(evt);
@@ -227,6 +173,11 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         lbl1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
 
         lblCajaInicial.setText("Lps");
+        lblCajaInicial.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCajaInicialMouseClicked(evt);
+            }
+        });
 
         txtCantidad500.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCantidad500.setComas(true);
@@ -602,11 +553,6 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
                 txtFacturadoFocusLost(evt);
             }
         });
-        txtFacturado.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtFacturadoKeyReleased(evt);
-            }
-        });
         jTextoScrollBase1.setViewportView(txtFacturado);
 
         javax.swing.GroupLayout jPanelConTitulo1Layout = new javax.swing.GroupLayout(jPanelConTitulo1);
@@ -636,16 +582,6 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         txtPOS1.setComas(true);
         txtPOS1.setFormato(2);
         txtPOS1.setNextFocusableComponent(txtPOS2);
-        txtPOS1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtPOS1FocusLost(evt);
-            }
-        });
-        txtPOS1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtPOS1KeyReleased(evt);
-            }
-        });
 
         lblJustificacion.setLabelFor(txtCantidad500);
         lblJustificacion.setText("Justificación");
@@ -658,11 +594,6 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         txtPOS2.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtPOS2FocusLost(evt);
-            }
-        });
-        txtPOS2.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtPOS2KeyReleased(evt);
             }
         });
 
@@ -699,11 +630,6 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
                 txtDepositoFocusLost(evt);
             }
         });
-        txtDeposito.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtDepositoKeyReleased(evt);
-            }
-        });
 
         lblCaja.setText("Caja");
         lblCaja.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -714,16 +640,6 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         txtMontoJustificacion.setComas(true);
         txtMontoJustificacion.setFormato(2);
         txtMontoJustificacion.setNextFocusableComponent(txtJustificacion);
-        txtMontoJustificacion.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtMontoJustificacionFocusLost(evt);
-            }
-        });
-        txtMontoJustificacion.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtMontoJustificacionKeyReleased(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanelConTitulo2Layout = new javax.swing.GroupLayout(jPanelConTitulo2);
         jPanelConTitulo2.setLayout(jPanelConTitulo2Layout);
@@ -827,12 +743,16 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEditarFechaCierreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarFechaCierreActionPerformed
-
+        HabilitarControles(false);
         if (this.dtFechaCierre.isVisible()) {
             SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
             this.lblFechaCierre.setText(sdfDate.format(this.dtFechaCierre.getDate()));
             this.lblFechaCierre.setVisible(true);
             this.dtFechaCierre.setVisible(false);
+            limpiar();
+            sdfDate.applyPattern("ddMMyyyy");
+            ObtenerCierre(sdfDate.format(this.dtFechaCierre.getDate()));
+            HabilitarControles(true);
         } else {
             this.lblFechaCierre.setVisible(false);
             this.dtFechaCierre.setVisible(true);
@@ -911,13 +831,13 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     private void txtCantidad500KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidad500KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             this.txtCantidad100.requestFocus();
-        }        // TODO add your handling code here:
+        }
     }//GEN-LAST:event_txtCantidad500KeyReleased
 
     private void txtCantidad100KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidad100KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             this.txtCantidad50.requestFocus();
-        }        // TODO add your handling code here:
+        }
     }//GEN-LAST:event_txtCantidad100KeyReleased
 
     private void txtCantidad50KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidad50KeyReleased
@@ -957,6 +877,73 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidad1KeyReleased
 
     private void mnuLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLimpiarActionPerformed
+        limpiar();
+    }//GEN-LAST:event_mnuLimpiarActionPerformed
+
+
+    private void txtPOS2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPOS2FocusLost
+        diferencia();
+    }//GEN-LAST:event_txtPOS2FocusLost
+
+    private void txtDepositoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDepositoFocusLost
+        cajaFinal();
+    }//GEN-LAST:event_txtDepositoFocusLost
+
+    private void txtFacturadoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFacturadoFocusLost
+        calcularFacturado();
+
+    }//GEN-LAST:event_txtFacturadoFocusLost
+
+    private void txtMontoMonedasFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMontoMonedasFocusLost
+        totalCaja();
+    }//GEN-LAST:event_txtMontoMonedasFocusLost
+
+    private void txtMontoMonedasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoMonedasKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.txtFacturado.requestFocus();
+        }
+    }//GEN-LAST:event_txtMontoMonedasKeyReleased
+
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        try {
+            guardar();
+            JOptionPane.showMessageDialog(this, "Se guaradon los cambios", "Cierre Diario", 1);
+        } catch (ParseException | SQLException | IllegalArgumentException | IllegalAccessException ex) {
+            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void lblCajaInicialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCajaInicialMouseClicked
+        if (evt.getClickCount() > 1) {
+            String respuesta = JOptionPane.showInputDialog(this, "Ingrese Caja Inicial", "Cierre Diario", JOptionPane.QUESTION_MESSAGE);
+            lblCajaInicial.setText("Lps " + df2.format(Double.valueOf(respuesta)));
+        }
+    }//GEN-LAST:event_lblCajaInicialMouseClicked
+
+    private void calcularFacturado() {
+        int pos = 0;
+        try {
+            StringTokenizer tokens = new StringTokenizer(txtFacturado.getText(), "+");
+            Double fact = 0.0;
+            while (tokens.hasMoreTokens()) {
+                String token = tokens.nextToken();
+                pos = pos + token.length() + 1;
+                if (!token.isEmpty()) {
+                    Double val = new Double(token);
+                    fact = fact + val;
+                }
+            }
+            facturado = fact;
+            lblFacturado.setText("Lps " + df2.format(fact));
+
+        } catch (Exception e) {
+            txtFacturado.setCaretPosition(pos - 1);
+            txtFacturado.setForeground(Color.red);
+            txtFacturado.requestFocus();
+        }
+    }
+
+    private void limpiar() {
         this.txtCantidad500.setText("");
         this.txtCantidad100.setText("");
         this.txtCantidad50.setText("");
@@ -984,100 +971,44 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         this.txtDeposito.setText("");
         this.lblCajaFinal.setText("Lps");
         this.lblFacturado.setText("");
+        this.txtDiferencia.setText("");
         this.txtCantidad500.requestFocus();
-    }//GEN-LAST:event_mnuLimpiarActionPerformed
+    }
 
-    private void txtPOS1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPOS1FocusLost
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPOS1FocusLost
+    private void HabilitarControles(boolean value) {
+        this.txtCantidad500.setEnabled(value);
+        this.txtCantidad100.setEnabled(value);
+        this.txtCantidad50.setEnabled(value);
+        this.txtCantidad20.setEnabled(value);
+        this.txtCantidad10.setEnabled(value);
+        this.txtCantidad5.setEnabled(value);
+        this.txtCantidad2.setEnabled(value);
+        this.txtCantidad1.setEnabled(value);
+        this.txtMontoMonedas.setEnabled(value);
+        this.txtFacturado.setEnabled(value);
+        this.txtPOS1.setEnabled(value);
+        this.txtPOS2.setEnabled(value);
+        this.txtMontoJustificacion.setEnabled(value);
+        this.txtJustificacion.setEnabled(value);
+        this.txtDeposito.setEnabled(value);
+        this.btnAceptar.setEnabled(value);
+    }
 
-    private void txtPOS1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPOS1KeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPOS1KeyReleased
+    private void cajaFinal() {
+        double deposito = Double.parseDouble((this.txtDeposito.getTextoSinFormato().length() <= 0 ? "0" : this.txtDeposito.getTextoSinFormato()));
 
-    private void txtPOS2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPOS2FocusLost
+        this.lblCajaFinal.setText(df2.format(montoTotalCaja - deposito));
+        cajaFinal = montoTotalCaja - deposito;
+    }
+
+    private void diferencia() {
         double pos1 = Double.parseDouble((this.txtPOS1.getTextoSinFormato().length() <= 0 ? "0" : this.txtPOS1.getTextoSinFormato()));
         double pos2 = Double.parseDouble((this.txtPOS2.getTextoSinFormato().length() <= 0 ? "0" : this.txtPOS2.getTextoSinFormato()));
 
         double diferencia = (cajaApertura + pos1 + pos2) - facturado;
 
         this.txtDiferencia.setText(df2.format(diferencia));
-    }//GEN-LAST:event_txtPOS2FocusLost
-
-    private void txtPOS2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPOS2KeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPOS2KeyReleased
-
-    private void txtDepositoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDepositoFocusLost
-        double deposito = Double.parseDouble((this.txtDeposito.getTextoSinFormato().length() <= 0 ? "0" : this.txtDeposito.getTextoSinFormato()));
-
-        this.lblCajaFinal.setText(df2.format(montoTotalCaja - deposito));
-        cajaFinal = montoTotalCaja - deposito;
-    }//GEN-LAST:event_txtDepositoFocusLost
-
-    private void txtDepositoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDepositoKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDepositoKeyReleased
-
-    private void txtMontoJustificacionFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMontoJustificacionFocusLost
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtMontoJustificacionFocusLost
-
-    private void txtMontoJustificacionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoJustificacionKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtMontoJustificacionKeyReleased
-
-    private void txtFacturadoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturadoKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFacturadoKeyReleased
-
-    private void txtFacturadoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFacturadoFocusLost
-        int pos = 0;
-        try {
-            StringTokenizer tokens = new StringTokenizer(txtFacturado.getText(), "+");
-            Double fact = new Double(0.0);
-            while (tokens.hasMoreTokens()) {
-                String token = tokens.nextToken();
-                pos = pos + token.length() + 1;
-                if (!token.isEmpty()) {
-                    Double val = new Double(token);
-                    fact = fact + val.doubleValue();
-                }
-            }
-            facturado = fact;
-            lblFacturado.setText("Lps " + df2.format(fact));
-
-        } catch (Exception e) {
-            txtFacturado.setCaretPosition(pos - 1);
-            txtFacturado.setForeground(Color.red);
-            txtFacturado.requestFocus();
-        }
-
-    }//GEN-LAST:event_txtFacturadoFocusLost
-
-    private void txtMontoMonedasFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMontoMonedasFocusLost
-        totalCaja();
-    }//GEN-LAST:event_txtMontoMonedasFocusLost
-
-    private void txtMontoMonedasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoMonedasKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            this.txtFacturado.requestFocus();
-        }
-    }//GEN-LAST:event_txtMontoMonedasKeyReleased
-
-    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        try {
-            guardar();
-        } catch (ParseException ex) {
-            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnAceptarActionPerformed
+    }
 
     private void guardar() throws ParseException, SQLException, IllegalArgumentException, IllegalAccessException {
 
@@ -1087,6 +1018,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         Date parsed = format.parse(this.lblFechaCierre.getText());
         java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
 
+        dto.setSecuencia(CodigoSecuencia);
         dto.setFechaCierre(sqlDate);
         dto.setCajaInicio(cajaInicial);
         dto.setCantidad500(Integer.parseInt((this.txtCantidad500.getTextoSinFormato().length() <= 0 ? "0" : this.txtCantidad500.getTextoSinFormato())));
@@ -1130,16 +1062,79 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         this.lblCajaApertura.setText("Lps " + df2.format((c500 + c100 + c50 + c20 + c10 + c5 + c2 + c1 + coins) - cajaInicial));
     }
 
-    private void cargarFecha(Date fecha) {
+    private void ObtenerCierre(String fecha) {
 
+        try {
+
+            cajaInicial = CierreDiarioBC.getCajaInicial(fecha);
+
+            if (cajaInicial <= 0.0) {                
+                String respuesta = JOptionPane.showInputDialog(this, "Ingrese Caja Inicial", "Cierre Diario", JOptionPane.QUESTION_MESSAGE);
+                cajaInicial = Double.valueOf(respuesta);
+            }
+            this.lblCajaInicial.setText("Lps " + df2.format(cajaInicial));
+
+            CierreDiario dto;
+            dto = CierreDiarioBC.getCierreDiario(fecha);
+
+            if (dto != null) {
+
+                CodigoSecuencia = dto.getSecuencia();
+                this.txtCantidad500.setText(String.valueOf(dto.getCantidad500()));
+                this.lblMonto500.setText("= Lps " + df2.format((500 * dto.getCantidad500())));
+
+                this.txtCantidad100.setText(String.valueOf(dto.getCantidad100()));
+                this.lblMonto100.setText("= Lps " + df2.format((100 * dto.getCantidad100())));
+
+                this.txtCantidad50.setText(String.valueOf(dto.getCantidad50()));
+                this.lblMonto50.setText("= Lps " + df2.format((50 * dto.getCantidad50())));
+
+                this.txtCantidad20.setText(String.valueOf(dto.getCantidad20()));
+                this.lblMonto20.setText("= Lps " + df2.format((20 * dto.getCantidad20())));
+
+                this.txtCantidad10.setText(String.valueOf(dto.getCantidad10()));
+                this.lblMonto10.setText("= Lps " + df2.format((10 * dto.getCantidad10())));
+
+                this.txtCantidad5.setText(String.valueOf(dto.getCantidad5()));
+                this.lblMonto5.setText("= Lps " + df2.format((5 * dto.getCantidad5())));
+
+                this.txtCantidad2.setText(String.valueOf(dto.getCantidad2()));
+                this.lblMonto2.setText("= Lps " + df2.format((2 * dto.getCantidad2())));
+
+                this.txtCantidad1.setText(String.valueOf(dto.getCantidad1()));
+                this.lblMonto1.setText("= Lps " + df2.format((1 * dto.getCantidad1())));
+
+                this.txtMontoMonedas.setText(String.valueOf(df2.format(dto.getMontoMoneda())));
+
+                this.txtFacturado.setText(dto.getStrFacturado());
+                this.lblFacturado.setText("Lps " + String.valueOf(df2.format(dto.getMontoFacturado())));
+
+                this.txtPOS1.setText(String.valueOf(df2.format(dto.getMontoPOS1())));
+                this.txtPOS2.setText(String.valueOf(df2.format(dto.getMontoPOS2())));
+                this.txtMontoJustificacion.setText(String.valueOf(df2.format(dto.getMontoJustificacion())));
+                this.txtJustificacion.setText(dto.getJustificacion());
+                this.txtDeposito.setText(String.valueOf(df2.format(dto.getMontoDeposito())));
+
+                totalCaja();
+                calcularFacturado();
+                diferencia();
+                cajaFinal();
+
+                CnnMySql.setAccion(CnnMySql.ACCION_UPDATE);
+            }
+
+        } catch (SQLException | IllegalArgumentException | IllegalAccessException ex) {
+            Logger.getLogger(RegistraCierreDiario.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private DecimalFormat df2 = new DecimalFormat("#,###,###,##0.00");
-    private Double cajaApertura = new Double(0.0);
-    private Double cajaInicial = new Double(0.0);
-    private Double cajaFinal = new Double(0.0);
-    private Double facturado = new Double(0.0);
-    private Double montoTotalCaja = new Double(0.0);
+    private final DecimalFormat df2 = new DecimalFormat("#,###,###,##0.00");
+    private Double cajaApertura = 0.0;
+    private Double cajaInicial = 0.0;
+    private Double cajaFinal = 0.0;
+    private Double facturado = 0.0;
+    private Double montoTotalCaja = 0.0;
+    private Integer CodigoSecuencia = 0;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.gmail.lrchfox3.controles.botones.JBotonAceptar btnAceptar;
     private com.gmail.lrchfox3.controles.botones.paint.JBotonLapiz btnEditarFechaCierre;
