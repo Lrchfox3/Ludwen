@@ -11,6 +11,7 @@ import static com.gmail.lrchfox3.utilitarios.Utileria.getStrFechaActual;
 import com.outlook.ludwen.DBObject.CierreDiario;
 import com.outlook.ludwen.DBObject.CierreDiarioBC;
 import java.awt.Color;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -37,13 +38,14 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
 
     private void inicializar() {
         initComponents();
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/com/outlook/ludwen/Resources/cierrediario.png")));
         CnnMySql.setAccion(CnnMySql.ACCION_INSERT);
         this.dtFechaCierre.setVisible(false);
         this.dtFechaCierre.setDate(getFechaActual());
         this.lblFechaCierre.setText(getStrFechaActual(getFechaActual(), "dd/MM/yyyy"));
         ObtenerCierre(getStrFechaActual(getFechaActual(), "ddMMyyyy"));
         
-        this.txtCantidad500.requestFocus();
+        this.txtFacturado.requestFocus();
     }
 
     /**
@@ -126,6 +128,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cierre Diario");
+        setAlwaysOnTop(true);
         setResizable(false);
         setState(1);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -311,7 +314,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         txtMontoMonedas.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtMontoMonedas.setComas(true);
         txtMontoMonedas.setFormato(2);
-        txtMontoMonedas.setNextFocusableComponent(txtFacturado);
+        txtMontoMonedas.setNextFocusableComponent(txtPOS1);
         txtMontoMonedas.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtMontoMonedasFocusLost(evt);
@@ -547,10 +550,15 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
 
         txtFacturado.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtFacturado.setComas(false);
-        txtFacturado.setNextFocusableComponent(txtPOS1);
+        txtFacturado.setNextFocusableComponent(btnEditarFechaCierre);
         txtFacturado.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtFacturadoFocusLost(evt);
+            }
+        });
+        txtFacturado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFacturadoKeyReleased(evt);
             }
         });
         jTextoScrollBase1.setViewportView(txtFacturado);
@@ -601,7 +609,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         lblPOS2.setText("Atlantida");
         lblPOS2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
 
-        btnAceptar.setNextFocusableComponent(txtCantidad500);
+        btnAceptar.setNextFocusableComponent(txtFacturado);
         btnAceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAceptarActionPerformed(evt);
@@ -724,16 +732,22 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelConTitulo2, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-            .addComponent(jPanelConTitulo1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-            .addComponent(pnlCaja, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanelConTitulo2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(pnlCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanelConTitulo1, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))))
+                .addGap(131, 131, 131))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelConTitulo1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelConTitulo2, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -761,18 +775,20 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditarFechaCierreActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        this.txtCantidad500.requestFocus();
+        this.txtFacturado.requestFocus();
     }//GEN-LAST:event_formWindowOpened
 
     private void txtCantidad500FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidad500FocusLost
+           this.lblMonto500.setText("=" );
         if (this.txtCantidad500.getTextoSinFormato().length() > 0) {
             double cantidad = 500 * Double.parseDouble(this.txtCantidad500.getTextoSinFormato());
             this.lblMonto500.setText("= Lps " + df2.format(cantidad));
-        }
+        }        
         totalCaja();
     }//GEN-LAST:event_txtCantidad500FocusLost
 
     private void txtCantidad100FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidad100FocusLost
+        this.lblMonto100.setText("=");
         if (this.txtCantidad100.getTextoSinFormato().length() > 0) {
             double cantidad = 100 * Double.parseDouble(this.txtCantidad100.getTextoSinFormato());
             this.lblMonto100.setText("= Lps " + df2.format(cantidad));
@@ -781,6 +797,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidad100FocusLost
 
     private void txtCantidad50FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidad50FocusLost
+        this.lblMonto50.setText("=");
         if (this.txtCantidad50.getTextoSinFormato().length() > 0) {
             double cantidad = 50 * Double.parseDouble(this.txtCantidad50.getTextoSinFormato());
             this.lblMonto50.setText("= Lps " + df2.format(cantidad));
@@ -789,6 +806,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidad50FocusLost
 
     private void txtCantidad20FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidad20FocusLost
+        this.lblMonto20.setText("=");
         if (this.txtCantidad20.getTextoSinFormato().length() > 0) {
             double cantidad = 20 * Double.parseDouble(this.txtCantidad20.getTextoSinFormato());
             this.lblMonto20.setText("= Lps " + df2.format(cantidad));
@@ -797,6 +815,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidad20FocusLost
 
     private void txtCantidad10FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidad10FocusLost
+        this.lblMonto10.setText("=");
         if (this.txtCantidad10.getTextoSinFormato().length() > 0) {
             double cantidad = 10 * Double.parseDouble(this.txtCantidad10.getTextoSinFormato());
             this.lblMonto10.setText("= Lps " + df2.format(cantidad));
@@ -805,6 +824,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidad10FocusLost
 
     private void txtCantidad5FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidad5FocusLost
+        this.lblMonto5.setText("=");
         if (this.txtCantidad5.getTextoSinFormato().length() > 0) {
             double cantidad = 5 * Double.parseDouble(this.txtCantidad5.getTextoSinFormato());
             this.lblMonto5.setText("= Lps " + df2.format(cantidad));
@@ -813,6 +833,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidad5FocusLost
 
     private void txtCantidad2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidad2FocusLost
+        this.lblMonto2.setText("=");
         if (this.txtCantidad2.getTextoSinFormato().length() > 0) {
             double cantidad = 2 * Double.parseDouble(this.txtCantidad2.getTextoSinFormato());
             this.lblMonto2.setText("= Lps " + df2.format(cantidad));
@@ -821,6 +842,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidad2FocusLost
 
     private void txtCantidad1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidad1FocusLost
+        this.lblMonto1.setText("=");
         if (this.txtCantidad1.getTextoSinFormato().length() > 0) {
             double cantidad = 1 * Double.parseDouble(this.txtCantidad1.getTextoSinFormato());
             this.lblMonto1.setText("= Lps " + df2.format(cantidad));
@@ -920,6 +942,12 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_lblCajaInicialMouseClicked
 
+    private void txtFacturadoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFacturadoKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.txtCantidad500.requestFocus();
+        }
+    }//GEN-LAST:event_txtFacturadoKeyReleased
+
     private void calcularFacturado() {
         int pos = 0;
         try {
@@ -972,7 +1000,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
         this.lblCajaFinal.setText("Lps");
         this.lblFacturado.setText("");
         this.txtDiferencia.setText("");
-        this.txtCantidad500.requestFocus();
+        this.txtFacturado.requestFocus();
     }
 
     private void HabilitarControles(boolean value) {
@@ -997,7 +1025,7 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
     private void cajaFinal() {
         double deposito = Double.parseDouble((this.txtDeposito.getTextoSinFormato().length() <= 0 ? "0" : this.txtDeposito.getTextoSinFormato()));
 
-        this.lblCajaFinal.setText(df2.format(montoTotalCaja - deposito));
+        this.lblCajaFinal.setText("Lps " + df2.format(montoTotalCaja - deposito));
         cajaFinal = montoTotalCaja - deposito;
     }
 
