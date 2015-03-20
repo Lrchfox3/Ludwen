@@ -128,7 +128,6 @@ public class RegistraCierreDiario extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cierre Diario");
-        setAlwaysOnTop(true);
         setResizable(false);
         setState(1);
         addWindowListener(new java.awt.event.WindowAdapter() {
